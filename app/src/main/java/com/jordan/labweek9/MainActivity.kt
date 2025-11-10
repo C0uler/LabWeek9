@@ -29,6 +29,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jordan.labweek9.ui.theme.LabWeek9Theme
+import com.jordan.labweek9.ui.theme.OnBackgroundItemText
+import com.jordan.labweek9.ui.theme.OnBackgroundTitleText
+import com.jordan.labweek9.ui.theme.PrimaryTextButton
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,9 +108,9 @@ fun HomeContent(
                 //You can also use verticalArrangement = Arrangement.Center to align the Column vertically
                 horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                Text(text = stringResource(
-                    id = R.string.enter_item)
-                )
+                    OnBackgroundTitleText(text = stringResource(
+                        id = R.string.enter_item)
+                    )
                 //Here, we use TextField to display a text input field
                 TextField(
                     //Set the value of the input field
@@ -123,16 +126,12 @@ fun HomeContent(
                 )
                 //Here, we use Button to display a button
                 //the onClick parameter is used to set what happens when the button is clicked
-                Button(onClick = {
-
-                    onButtonClick()
-                }) {
-                    //Set the text of the button
-                    Text(text = stringResource(
+                PrimaryTextButton(text = stringResource(
                         id = R.string.button_click)
-                    )
+                    ) {
+                        onButtonClick()
+                    }
                 }
-            }
         }
             //Here, we use items to display a list of items inside the LazyColumn
             //This is the RecyclerView replacement
@@ -141,7 +140,7 @@ fun HomeContent(
                     modifier = Modifier.padding(vertical = 4.dp).fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = item.name)
+                    OnBackgroundItemText(text = item.name)
                 }
             }
         }
