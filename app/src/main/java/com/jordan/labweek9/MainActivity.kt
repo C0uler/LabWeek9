@@ -39,6 +39,19 @@ import com.jordan.labweek9.ui.theme.LabWeek9Theme
 import com.jordan.labweek9.ui.theme.OnBackgroundItemText
 import com.jordan.labweek9.ui.theme.OnBackgroundTitleText
 import com.jordan.labweek9.ui.theme.PrimaryTextButton
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
+private val moshi: Moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
+private val studentListType = Types.newParameterizedType(List::class.java, Student::class.java)
+private val studentListAdapter: JsonAdapter<List<Student>> = moshi.adapter(studentListType)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,6 +128,16 @@ fun App(navController: NavHostController) {
 
 @Composable
 fun ResultContent(listData: String) {
+    val studentList = remember(listData) {
+        try {
+            // Use the adapter to parse the JSON. Handle nulls.
+            studentListAdapter.fromJson(listData) ?: emptyList()
+        } catch (e: Exception) {
+            // If parsing fails (e.g., bad JSON), return an empty list
+            emptyList<Student>()
+        }
+    }
+
     Column(
         modifier = Modifier
             .padding(vertical = 4.dp)
@@ -149,7 +172,10 @@ fun Home( navigateFromHomeToResult: (String) -> Unit){
                 inputField.value = Student("")
             }
         },
-        { navigateFromHomeToResult(listData.toList().toString()) }
+        {
+            val jsonString = studentListAdapter.toJson(listData.toList())
+            navigateFromHomeToResult(jsonString)
+        }
     )
 }
 
